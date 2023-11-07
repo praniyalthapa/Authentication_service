@@ -1,2 +1,1 @@
-`This is Authentication micro service for our airplane management app.`
-t 
+This is Authentication micro service for our airplane management app.
