@@ -2,6 +2,8 @@
 const {
   Model
 } = require('sequelize');
+const {SALT}=require('../config/serverConfig');
+const bcrypt=require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -32,5 +34,12 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
   });
+//making trigger of our database and beforeCreate is a hook/trigger which accepts a callback function
+User.beforeCreate((user)=>{
+  const encryptedPassword=bcrypt.hashSync(user.password,SALT);
+  user.password=encryptedPassword;
+});
+
+
   return User;
 };
