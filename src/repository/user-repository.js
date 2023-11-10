@@ -26,7 +26,19 @@ class UserRepository{
             
         }
     }
-
+  async getById(userId){
+    try {
+        const user= await User.findByPk(userId,({ //it will give all the data along with password which we don't want so we use something called attribute
+            attributes:['email','id']
+        })); 
+        return user;
+        
+    } catch (error) {
+        console.log("Something went wrong on repository layer");
+        throw error;
+        
+    }
+  }
    
 
 
