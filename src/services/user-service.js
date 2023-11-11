@@ -27,9 +27,30 @@ class UserService{
         console.log("Error occured!");
         throw error;
       }
+    }
+    async signIn(email,plainPassword){
+        try {
+       //first step is fetch user by using email
+       const user=await this.userRepository.getByEmail(email);
+       //now compare plain password with encrypted passwrord
+       const passwordMatch=this.checkPassword(plainPassword,user.password);
+     if(!passwordMatch){
+        console.log("password doesnt match");
+
+        throw {error:"Incorrect password"}
+       
+     }    //if password matches then create a token and send to user
+     const newJWT=this.createToken({email:user.email,id:user.id});
+     return newJWT;        
+        } catch (error) {
+            console.log("Something went wrong in the signIn process");
+            throw error;
+            
+        }
 
 
     }
+    
 verifyToken(token){
     try {
         const response=jwt.verify(token,JWT_KEY); //in argument we pass token and same jwt_key from which we created token 
@@ -42,16 +63,13 @@ verifyToken(token){
     }
 
 }
-checkPassword(userPlainPassword,encryptedPassword){ //two argument are need for checking the user entered password
+checkPassword(userInputPlainPassword, encryptedPassword) {
     try {
-        return bcrypt.compareSync(userPlainPassword,encryptedPassword);//bycrpt.comparesync need two arguments to compare and throw return
-        
+        return bcrypt.compareSync(userInputPlainPassword, encryptedPassword);
     } catch (error) {
-        console.log("Something error occured in comapring your password");
+        console.log("Something went wrong in password comparison");
         throw error;
-        
     }
-
 }
 
 }
