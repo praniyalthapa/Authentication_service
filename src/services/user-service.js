@@ -1,6 +1,7 @@
 const UserRepository=require('../repository/user-repository');
 const {JWT_KEY}=require('../config/serverConfig');
 const jwt = require('jsonwebtoken');
+const bcrypt=require('bcrypt');
 class UserService{
     constructor(){
         this.userRepository=new UserRepository();
@@ -15,6 +16,7 @@ class UserService{
     
    }
     }
+    //token is created only if we have verified our password and email
      createToken(user){ //using this user object we are going to create token 
       try {
         const result = jwt.sign(user, JWT_KEY, { expiresIn: '1d' }); //jwt.sign takes two argument one is user and next one is KEY which is in my .env file and next argument tell timing to expire jwt token
@@ -35,6 +37,17 @@ verifyToken(token){
         
     } catch (error) {
         console.log("Oops! Something went wrong!",error);
+        throw error;
+        
+    }
+
+}
+checkPassword(userPlainPassword,encryptedPassword){ //two argument are need for checking the user entered password
+    try {
+        return bcrypt.compareSync(userPlainPassword,encryptedPassword);//bycrpt.comparesync need two arguments to compare and throw return
+        
+    } catch (error) {
+        console.log("Something error occured in comapring your password");
         throw error;
         
     }
