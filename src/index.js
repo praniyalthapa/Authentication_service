@@ -1,6 +1,9 @@
 const express=require('express');
 const {PORT}=require('./config/serverConfig');
 const bodyParser=require('body-parser');
+const db=require('./models/index');
+const {User,Role}=require('./models/index');
+
 const app=express();
 const apiRoutes=require('./routes/index');
 const userService=require('./services/user-service');
@@ -25,6 +28,18 @@ const prepareAndStartServer=()=>{
         //  console.log(response);
         // const newToken=service.createToken({email:' praniyal100@gmail.com',id:2});
         // console.log("New token created now is :",newToken);
+        if(process.env.DB_SYNC){   //DB_SYNC=true inside .env file then remove it later on
+             db.sequelize.sync({alter:true});
+        }
+        const u1=await User.findByPk(3);
+        const r1=await Role.findByPk(2); //row1 uses (1) argument bocz it is for Admin row
+        // u1.addRole(r1);
+        // const response= await r1.getUsers(); //it will give all the roles for the particular user
+        const response=await u1.hasRole(r1);
+        console.log(response);
+
+
+
 
     });
 

@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsToMany(models.Role,{   //https://sequelize.org/docs/v6/advanced-association-concepts/advanced-many-to-many/
+        through:'User_Roles',//By passing a string to through above, we are asking Sequelize to automatically generate a model named User_Roles as the through table 
+      })
     }
   }
   User.init({

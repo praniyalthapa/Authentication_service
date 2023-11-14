@@ -2,6 +2,7 @@ const UserRepository=require('../repository/user-repository');
 const {JWT_KEY}=require('../config/serverConfig');
 const jwt = require('jsonwebtoken');
 const bcrypt=require('bcrypt');
+const { use } = require('../routes/V1');
 class UserService{
     constructor(){
         this.userRepository=new UserRepository();
@@ -56,6 +57,23 @@ class UserService{
         } catch (error) {
             console.log("Something went wrong in the sign in process");
             throw error;
+        }
+    }
+    async isAuthenticated(token){
+        try {
+            const response=this.verifyToken(token);
+            if(!response){
+                throw{error:'Invalide token'}
+            }
+            const user=await this.userRepository.getById(response.id);
+            if(!user){
+                throw{error:'User not found'}
+            }
+            return user.id;
+        } catch (error) {
+            console.log("Something went wrong in auth service");
+            throw error;
+            
         }
     }
      //token is created only if we have verified our password and email
