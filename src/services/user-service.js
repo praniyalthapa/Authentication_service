@@ -109,6 +109,20 @@ checkPassword(userInputPlainPassword, encryptedPassword) {
         throw error;
     }
 }
+  isAdmin(userId){ //this function helps to find that isAdmin a user admin or not
+    try {
+        return this.userRepository.isAdmin(userId);
+        
+    } catch (error) {
+        console.log("Something went wrong on service layer");
+        throw error;
+    }
+
+
+
+  }
+
+
 
 }
 module.exports=UserService;
